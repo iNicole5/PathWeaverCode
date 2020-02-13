@@ -29,12 +29,17 @@ public class Drivetrain extends SubsystemBase {
 
     private static final double kGearRatio = 7.29;
     private static final double kWheelRadiusInches = 3.0;
-    
-    TalonFX leftMaster = new TalonFX(3);
-    TalonFX rightMaster = new TalonFX(1);
 
+    TalonFX rightMaster = new TalonFX(1);
+    //CANSparkMax leftMaster = new CANSparkMax(3, CANSparkMaxLowLevel.MotorType.kBrushless);
+    TalonFX leftMaster = new TalonFX(3);
+    //CANSparkMax rightMaster = new CANSparkMax(3, CANSparkMaxLowLevel.MotorType.kBrushless);
+
+    //CANSparkMax leftSlave = new CANSparkMax(3, CANSparkMaxLowLevel.MotorType.kBrushless);
     TalonFX leftSlave = new TalonFX(2);
     TalonFX rightSlave = new TalonFX(0);
+    //CANSparkMax rightSlave = new CANSparkMax(3, CANSparkMaxLowLevel.MotorType.kBrushless);
+
 
     PigeonIMU gyro = new PigeonIMU(0);  //Change to different gyro
 
@@ -99,11 +104,9 @@ public DifferentialDriveWheelSpeeds getSpeeds() {
     odometry.resetPosition(new Pose2d(), getHeading());
   }
 
-  @Override
-  public void periodic() {
-    //pose = odometry.update(getHeading(), getSpeeds());
-    //pose = odometry.update(getHeading(), getLeftEncoder(), getRightEncoder());
-    pose = odometry.update(getHeading(), getSpeeds());
+  public void periodic()
+  {
+      odometry.update(getHeading(), getSpeeds(), getSpeeds());
   }
 
 }

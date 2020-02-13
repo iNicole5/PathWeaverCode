@@ -29,6 +29,11 @@ public class Drivetrain extends SubsystemBase {
 
     private static final double kGearRatio = 7.29;
     private static final double kWheelRadiusInches = 3.0;
+    public static final double TICKS_TO_METERS = 0.00004349359699;
+
+    public static final double ks = 0.3;
+    public static final double kv = 1.96;
+    public static final double ka = 0.06;
 
     TalonFX rightMaster = new TalonFX(1);
     //CANSparkMax leftMaster = new CANSparkMax(3, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -46,7 +51,7 @@ public class Drivetrain extends SubsystemBase {
     DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(20));
     DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(getHeading());
 
-    SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.3, 1.96, 0.06);
+    SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(ks, kv, ka);
 
     PIDController leftPIDController = new PIDController(2.95, 0, 0);
     PIDController rightPIDController = new PIDController(2.95, 0, 0);
@@ -70,8 +75,8 @@ public Rotation2d getHeading() {
 
 public DifferentialDriveWheelSpeeds getSpeeds() {
     return new DifferentialDriveWheelSpeeds(
-        leftMaster.getSelectedSensorVelocity()/ kGearRatio * 2 * Math.PI * Units.inchesToMeters(kWheelRadiusInches) / 60,
-        rightMaster.getSelectedSensorVelocity()/ kGearRatio * 2 * Math.PI * Units.inchesToMeters(kWheelRadiusInches) / 60
+        leftMaster.getSelectedSensorVelocity()* 10 * TICKS_TO_METERS,
+        rightMaster.getSelectedSensorVelocity()* 10 * TICKS_TO_METERS
     );
   }
 
@@ -106,7 +111,8 @@ public DifferentialDriveWheelSpeeds getSpeeds() {
 
   public void periodic()
   {
-      odometry.update(getHeading(), getSpeeds(), getSpeeds());
+      odometry.update(getHeading(), leftMaster.getSelectedSensorPosition()*TICKS_TO_METERS, 
+      rightMaster.getSelectedSensorPosition() * TICKS_TO_METERS);
   }
 
 }

@@ -2,6 +2,8 @@ package frc.robot;
 
 import java.util.Arrays;
 
+import edu.wpi.first.wpilibj.controller.RamseteController;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
@@ -10,10 +12,14 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.driveTrain.Drivetrain;
 
 public class RobotContainer {
     private Drivetrain drive = new Drivetrain();
+
+    public static final double kRamseteB = 2;
+    public static final double kRamseteZeta = 0.7;
 
     public Command getAutonomousCommand() {
         TrajectoryConfig config = new TrajectoryConfig(
@@ -29,14 +35,14 @@ public class RobotContainer {
         RamseteCommand command = new RamseteCommand(
             trajectory,
             drive::getPose,
-            new RamseteController(2, .7),
-            drive.getFeedforward(),
+            new RamseteController(kRamseteB, kRamseteB),
+            new SimpleMotorFeedforward(Drivetrain.ks, Drivetrain.kv, Drivetrain.ka),
             drive.getKinematics(),
             drive::getSpeeds,
             drive.getLeftPIDController(),
             drive.getRightPIDController(),
             drive::setOutputVolts,
-            drive
+                (Subsystem) drive
         );
     
         return command.andThen(() -> drive.setOutputVolts(0, 0));

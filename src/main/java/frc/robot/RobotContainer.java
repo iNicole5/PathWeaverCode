@@ -35,7 +35,7 @@ public class RobotContainer {
         RamseteCommand command = new RamseteCommand(
             trajectory,
             drive::getPose,
-            new RamseteController(kRamseteB, kRamseteB),
+            new RamseteController(kRamseteB, kRamseteZeta),
             new SimpleMotorFeedforward(Drivetrain.ks, Drivetrain.kv, Drivetrain.ka),
             drive.getKinematics(),
             drive::getSpeeds,

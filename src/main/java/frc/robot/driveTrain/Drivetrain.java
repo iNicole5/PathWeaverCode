@@ -22,30 +22,25 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.util.Units;
 
-/**
- * Add your docs here.
- */
 public class Drivetrain extends SubsystemBase {
 
-    private static final double kGearRatio = 7.29;
-    private static final double kWheelRadiusInches = 3.0;
+//Variables
+    //private static final double kGearRatio = 7.29;
+    //private static final double kWheelRadiusInches = 3.0;
     public static final double TICKS_TO_METERS = 0.00004349359699;
 
     public static final double ks = 0.3;
     public static final double kv = 1.96;
     public static final double ka = 0.06;
 
+//Motors
     TalonFX rightMaster = new TalonFX(1);
-    //CANSparkMax leftMaster = new CANSparkMax(3, CANSparkMaxLowLevel.MotorType.kBrushless);
     TalonFX leftMaster = new TalonFX(3);
-    //CANSparkMax rightMaster = new CANSparkMax(3, CANSparkMaxLowLevel.MotorType.kBrushless);
 
-    //CANSparkMax leftSlave = new CANSparkMax(3, CANSparkMaxLowLevel.MotorType.kBrushless);
     TalonFX leftSlave = new TalonFX(2);
     TalonFX rightSlave = new TalonFX(0);
-    //CANSparkMax rightSlave = new CANSparkMax(3, CANSparkMaxLowLevel.MotorType.kBrushless);
 
-
+//Gyro
     PigeonIMU gyro = new PigeonIMU(0);  //Change to different gyro
 
     DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(20));
@@ -53,6 +48,7 @@ public class Drivetrain extends SubsystemBase {
 
     SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(ks, kv, ka);
 
+//PID Controller
     PIDController leftPIDController = new PIDController(2.95, 0, 0);
     PIDController rightPIDController = new PIDController(2.95, 0, 0);
 
@@ -60,9 +56,11 @@ public class Drivetrain extends SubsystemBase {
     
 public Drivetrain() {
 
+//Slave Drive the motors
     leftSlave.follow(leftMaster);
-    rightSlave.follow(rightMaster); 
+    rightSlave.follow(rightMaster);
 
+//Invert the Motors
     leftMaster.setInverted(false);
     rightMaster.setInverted(true);
 
